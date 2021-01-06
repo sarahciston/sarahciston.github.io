@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sarah Ciston - Uncertainty Index</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+<!--DONT FORGET TO UPDATE URLS BEFORE FTP: D3.CSV AND HREFS -->
+    <script>
+        $(document).ready(function(){
+            var startIndex = String(window.location.search.substring(1)); //aka searchMeta
+            console.log("starting poem at line: " + startIndex);
+            var lineHeight = 44;  //line height for each line of the poem
+            var metaHeight = 0.37;
+            var lineOffset = 6;
+            //var mediaWidth = window.innerWidth;
+            var poem; // global variable to hold the poem
+            var quantified; // global variable to hold the QS data
+            //var ladymouth; // global variable to hold the LM poem
+            
+/*            //MEDIA QUERY TO FIX BROKEN CSS
+            console.log(mediaWidth);
+            if (mediaWidth < 949) {
+                d3.select("body").style("padding-left", (mediaWidth * 0.05) + "px")
+            };
+ */           
+            
+    //load the poem --with callback to loadQS data
+        loadPoem();
+
+          //------------------------------------------------------------
+          //loadPoem: a function to load the poem csv into a variable.
+          //INCLUDES CALLBACK TO LOAD QS data
+          //------------------------------------------------------------
+          function loadPoem() {
+            d3.csv("https://sarahciston.now.sh/ui/data/poem.csv", function(data) //read data from the poem csv file
+            {
+              poem = data;
+              loadQS();
+            });
+          }//end loadPoem
+
+          //------------------------------------------------------------
+          //loadQS: a function to load the QS csv into a variable.
+          //INCLUDES CALLBACK TO  RENDER the poem
+          //CALLED in loadPoem function
+          //------------------------------------------------------------
+          function loadQS() {
+            d3.csv("https://sarahciston.now.sh/ui/data/quantified.csv", function(data){ //"/data/quantified.csv"  
+                //"http://acsweb.ucsd.edu/~sciston/portfolio/ui/data/quantified.csv"
+              quantified = data;
+              renderPoem();
+            });
+          }//end loadQS
+
+          //------------------------------------------------------------
+          //renderPoem: a function to render the poem extracted CSV data to the DOM
+          //CALLED in loadQS function
+          //------------------------------------------------------------
+          function renderPoem(){
+            //console.log(poem);//write the data to the console
+            //console.log(quantified);
+
+            d3.select("#maintext") //select the "maintext" div
+              .selectAll("div")    //select ALL of the divs beneath it -- trick - they don't exist yet!
+              .data(poem)          //bind the poem data to this code block
+              .enter()             //d3 magic!
+              .append("div")       //for each row in the data, create a div!
+              .style('height',lineHeight + 'px')   //hardcode the line height set in the var above
+              .text(function (d) {return d.text;}) //in this case, d stands for a single "row" in the poem object. This prim
+              .attr("id", function(d) {return d.id;}) //set the id = to the poem line ID
+              .attr("time", function(d) {return d.timestamp;}) //set the timestamp to the timestamp
+              .attr("citation", function(d){return d.citation;}) //set the citation attribute to citation if exists
+              //.classed("line", true)
+              .style('font-style', function(d){return d.decoration;}) //test replaced 'text-decoration'
+              //.attr(location.hash = function (d) {return d.id;})
+              //.location.hash = d3.select(this).attr("id");
+              //.on("mouseover", handleMouseOver)
+              //.on("mouseout", handleMouseOut);
+              //.on("scroll", handleScroll);
+            selectScroll(); // calls the handlers to get position and index to divs 
+          
+          };//end renderPoem            
+            
+        //------------------------------------
+        //selectScroll: handles scrolling find and select 
+        //CALLED in renderPoem
+        //calls position function in it
+        //----------------------------------
+    //if reach lastchild, append whole thing again?
+            
+    function randomElement(array) {
+      return array[Math.floor((Math.random() * array.length) /10) ];  
+    }; //HOW TO GET A RANDOM NUMBER WITHIN A SMALL RANGE
+            
+    function selectScroll() {
+        
+        //GETS ALL DIV POSITIONS compares to each line??
+        var selection = d3.select("#maintext").selectAll("div");
+        linePositions = [];
+        //totalLines = linePositions.length - 1;
+        var startPos;
+        selection.each(function(d,i){
+            var top = this.getBoundingClientRect().top;
+            if (i === 0) {
+                startPos = top;   
+            };
+            linePositions.push(top - startPos);
+        });
+        
+        
+        //THIS GRABS A QUERY FOR START POSITION AND MOVES TO THAT URL
+        //Sets first scroll position to selected - could make random on first load with if search string else random
+        //console.log(startIndex);
+        if (startIndex == "") {
+            startIndex == 0;
+            //startIndex = randomElement(linePositions);// Math.floor(Math.random(1,linePositions.length));
+            console.log("out of " + linePositions.length + "lines chose random: " + startIndex);
+        }
+        else {
+            //This part moves the start position
+            startIndex = document.getElementById(startIndex);
+            startPos = startIndex.getBoundingClientRect().top - metaHeight; 
+            console.log("started at "+ startPos);            
+        };
+        
+        if (startPos !== window.pageYOffset) {
+          window.scroll(0,(startPos));  
+            console.log("jumped to "+ window.pageYOffset);
+            };
+
+        //READS FOR SCROLL POSITION
+        d3.select(window).on("scroll", position); //position is a function below
+            
+    }; // end selectScroll function
+            
+        function position() {
+            var pos = window.pageYOffset + (window.innerHeight * metaHeight); //calculates the scroll position to a point partially down viewport
+            var lineIndex = d3.bisect(linePositions, pos);
+            //lineIndex = Math.min(div.size() - 1, lineIndex);
+            
+            var currentIndex; 
+            var dispatch = d3.dispatch("active", "progress");
+            
+            if (currentIndex !== lineIndex) {
+                dispatch.active(lineIndex);
+                currentIndex = lineIndex;
+            };
+            console.log(currentIndex);
+        /*    return currentIndex;
+        }; // tried to make position separate so i could use it elsewhere
+            
+        function getActive(currentIndex) { */
+            
+             //GRABS THE CORRECT DIV
+            activeLine = document.getElementById(currentIndex);
+        
+            handleScroll(activeLine);
+        }; // end position function
+            
+            
+        function handleScroll(activeLine){ //passes through the activeLine number and selects and classes that DIV, then does mouseOver function
+            d3.select(".activeLine").classed("activeLine", false); //clears last active line
+            d3.select(activeLine) // sets new active line properties //d3.select(this) {  // can use the d3.select(this) accessor to do something to the div you are mousing over!
+                .classed("activeLine", true); // styled red in CSS
+            
+            var selectedLine = d3.select(".activeLine");
+            var timestamp = selectedLine.attr("time");  //String(function(d) {return d.timestamp});
+            
+            //var cite = d3.select(this).attr("citation"); // this variable and function stores the citation for this line
+            var cite = selectedLine.attr("citation")
+            function citation(cite) {
+                cite = String(cite)
+                return cite;
+            };
+            
+            //d3.select("#data").append("div").text(cite);
+            
+            renderQS(""); //render NO DATA //MOVED FROM MOUSEOUT so that it doesn't clear until a new item is mousedover(sometimes this is a blank line so it does clear) 
+            
+            var filtered = filterData(timestamp); //filterData(function(d) {return d.timestamp});
+            renderQS(filtered, cite); //render the filtered data // renderQS(filtered, cite); 
+        };
+            
+            
+/*
+            //d3.select("#active").selectAll("div")
+                
+         //   d3.select("#maintext").selectAll("div")
+              //  .on("EVENTLISTENER") function() {
+                //update() then write and call update as like mouseover
+            //}
+
+    //    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {        
+            
+//            window.addEventListener("scroll", function handleScroll(){
+  //              console.log("scrolling");
+    //            console.log(window.scrollHeight);
+      //      });
+            
+        function handleScroll() {
+            window.addEventListener("scroll", handleScroll);
+            
+            document.getElementById("");
+          window.onscroll = function(ev) {
+            activeScroll = (window.innerHeight * 0.4) + window.scrollY;
+            elem = document.elementFromPoint(0, activeScroll);
+            console.log(String(elem));
+        //select DIV where Yposition == activeScroll 
+            };  
+        }; 
+
+//        window.onscroll = function(ev) {
+  //          activeScroll = (window.innerHeight * 0.4) + window.scrollY;
+    //        console.log("scrolled to "+activeScroll+"px");
+      //      return activeScroll;
+        //}; //end SCROLL POSITION
+*/                    
+                    
+            
+          //------------------------------------------------------------
+          //handleMouseOver: on mouseover, call the filterdata function and then render the QS data
+            // SARAH??COULD MAKE THIS ON ANOTHER ACTION INSTEAD
+          //------------------------------------------------------------
+/*         function handleMouseOver(d,i){
+            renderQS(""); //render NO DATA //MOVED FROM MOUSEOUT so that it doesn't clear until a new item is mousedover(sometimes this is a blank line so it does clear) 
+            //d3.select(this) {  // can use the d3.select(this) accessor to do something to the div you are mousing over!
+            var cite = d3.select(this).attr("citation");
+            function citation(cite) {
+                cite = String(cite)
+                return cite;
+            };
+            
+            var filtered = filterData(d.timestamp);
+            renderQS(filtered, cite); //render the filtered data
+            
+          };
+
+          //------------------------------------------------------------
+          //handleMouseOut: on mouseout, render NO data
+          //------------------------------------------------------------
+          function handleMouseOut(){
+            //renderQS(""); //render NO DATA //MOVED TO TOP OF MOUSEOVER so that it doesn't clear until a new item is mousedover(sometimes this is a blank line so it does clear) 
+          };
+
+*/         
+          //------------------------------------------------------------
+          //filterData: filter data in the quantified dataset based on the
+          //timestamp provided
+            //CALLED IN handleMouseOver
+            //COULD ADD IN HERE additional filters for other datasets like LM -- randomize?
+          //------------------------------------------------------------
+          function filterData(timestamp) {
+            console.log("filter for data with time: " + timestamp);
+            var test = quantified.filter(function (el) {
+              return el.timestamp == timestamp
+              });
+
+            console.log("FOUND "+test.length+" records");
+            //renderQS(test)
+            return test;
+          };
+
+          //------------------------------------------------------------
+          //renderQS: render data into the right side bar
+            //COULD ADD IN HERE additional renders for other filtered datasets like LM
+          //------------------------------------------------------------
+          function renderQS(data, cite) {
+            /*d3.select("#data")
+                .append("div")
+                .style("text-color", "red")
+                .text(cite); 
+              */
+              
+            var qs = d3.select("#data") //select the #data div
+              .selectAll("div") //selectALL subdivs 
+              .data(data); //bind the data passed into this function
+            
+            qs.exit().remove(); //when the data disapears, make the divs disapear!
+
+            qs.enter()  //when the data is there... print it! Controls what columns of quantified csv to include
+                .append("a")
+                .append("div")
+              //.text(function(d) {return d.timestamp+": "+d.quantity+" "+d.unit+" "+d.label});
+                .text(function(d) {return d.label+" "+d.quantity+" "+d.unit});
+              
+            d3.select("#data").selectAll("a")
+                .each(function(d,i) {
+                    d3.select(this).attr("href", "https://sarahciston.now.sh/ui/reverseindex4.html?" + String(d.quantity)); 
+            
+            //d3.select("#data").append("div").text(cite);
+                          
+            });
+              
+            
+          };
+            
+    function travel(divID) {
+        divID = d3.select("'#"+divID+"'").scrollTop - metaHeight;
+        if (divID !== $(window).scrollTop + metaHeight) {
+            window.scroll(0,divID)
+        };
+    };
+            
+    //travel("300");
+
+      //NOTE TO SARAH: I HAD TO COMMENT OUT THE INFINITE SCROLL BC IT WAS DOING SOMETHING
+      //REALLY WEIRD ON MY MACHINE
+/*       $(window).scroll(function() {
+             if ($(window).scrollTop() > 10000 ) {
+                 $(window).scrollTop(1);
+             }
+             else if ( $(window).scrollTop() == 0 ) {
+               $(window).scrollTop(10000);
+             }
+         });
+      
+      
+         window.onscroll = function(ev) {
+             if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                 $(window).scrollTop(1);
+             }
+         }; 
+*/
+
+    }); //end $(document).ready(function()
+
+    </script>
+
+
+  <style>
+        /* For mobile phones and tablets: */
+        *, *:before, *:after {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        [class*="col-"] {
+            float: left;
+            padding: 30px;
+            display: block;
+        }
+
+        body {
+            text-decoration: none;
+            text-align: left;
+            font-family: Avenir, Helvetica, Arial, sans-serif;
+            font-size: 100%;
+            color: black;
+            margin: 0;
+            padding-left: 5%;
+        }
+        
+        .maintext {
+            /* how to constrain in mobile version? doesn't work: height: 66%; */
+        }
+
+        a:link, a:visited {
+            color: darkslateblue;
+            text-decoration: none;
+        }
+
+        a:hover, a:active {
+            text-decoration: underline;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /*div for qs data with vertical centering */
+        .data {
+            position: fixed;
+            display: block; 
+            bottom: 0%;
+            color: darkslateblue;
+            font-weight: 300;
+            background-color: white;
+            min-width: 100%;
+            min-height: 5%;
+        } 
+        
+        .activeLine {
+            font-weight: 600;
+        }
+        
+
+@media only screen and (min-width: 720px) {
+    /* For tablet-desktop: */
+
+        [class*="col-"] {
+            float: left;
+            padding: 20px 50px;
+            display: inline-block;
+            min-width: 0px;
+        }
+    
+        body {
+            padding-left: 20%;
+            min-width: 1200px;
+            padding-bottom: 2%;
+            padding-top: 2%;
+        }
+    
+        .maintext {
+            position: relative;
+            display: inline-block;            
+        }
+
+        .quantified {
+            /*padding-top: 50px;*/
+        }
+    
+        .data {
+            top: 40%;
+            padding-right: 25%;
+            background-color: none;
+            color: darkslateblue;
+            min-width: 500px;
+        }
+    
+        .col-1 {width: 8.33%; }
+        .col-2 {width: 16.66%;}
+        .col-3 {width: 25%;}
+        .col-4 {width: 33.33%;}
+        .col-5 {width: 41.66%;
+          /*background-color: yellow;*/
+        }
+        .col-6 {width: 50%;}
+        .col-7 {width: 58.33%;
+          /*background-color: blue;*/
+        }
+        .col-8 {width: 66.66%;}
+        .col-9 {width: 75%;  }
+        .col-10 {width: 83.33%;}
+        .col-11 {width: 91.66%;}
+        .col-12 {width: 100%;}
+      }
+    </style>
+    </head>
+
+<body>
+
+  <div class="col-5" class="maintext" id="maintext"><!-- 33% -->
+  </div>
+  <div class="col-7" id="quantified"><!--66%-->
+    <div class="data" id ="data"></div>
+  </div>
+
+</body>
+
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<!-- REVERSING THE DATABASES ATTEMPT-->
+<html>
+<head>
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sarah Ciston - Uncertainty Index</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+
+    <script>
+        $(document).ready(function(){
+          var searchMeta = String(window.location.search.substring(1));
+          console.log("sorting poem by " + searchMeta);
+          var lineHeight = 33;  //line height for each line of the poem
+          var poem; // global variable to hold the poem
+          var quantified; // global variable to hold the QS data
+
+          loadPoem(); //load the poem --with callback to loadQS data
+
+          //------------------------------------------------------------
+          //loadPoem: a function to load the poem csv into a variable.
+          //INCLUDES CALLBACK TO LOAD QS data
+          //------------------------------------------------------------
+          function loadPoem() {
+            d3.csv("https://sarahciston.now.sh/ui/data/poem.csv", function(data) //read data from the poem csv file
+            {
+              poem = data;
+              loadQS();
+            });
+          }//end loadPoem
+
+          //------------------------------------------------------------
+          //loadQS: a function to load the QS csv into a variable.
+          //INCLUDES CALLBACK TO  RENDER the poem
+          //CALLED in loadPoem function
+          //------------------------------------------------------------
+          function loadQS() {
+            d3.csv("https://sarahciston.now.sh/ui/data/quantified.csv", function(data){
+                quantified = data;
+              //renderPoem();
+                var filtered = filterQS(searchMeta);  // changed from category to characteristic for this version // now changed to two args searchType, searchQuantity
+                renderQS(filtered);
+            });
+          }//end loadQS
+            
+            
+        //----------A FUNCTION TO SEARCH QS--------could add sort 
+        function filterQS(searchMeta) { 
+            var test = quantified.filter(function(el) {
+                if (el.quantity == searchMeta)
+                    return el.quantity == searchMeta;
+                else if (el.type == searchMeta)
+                    return el.type == searchMeta;
+                else 
+                    console.log("no such metadata found")
+                });
+            return test;
+            };
+                
+            
+/*            
+            if (searchQuantity == true) 
+                //console.log("filter for poem with: " + searchQuantity);
+                var test = quantified.filter(function (el) {
+                return el.quantity == searchQuantity; // changed from el.type to el.quantity for this version
+            }) 
+            else 
+                //console.log("filter for poem with: " + searchType);
+                var test = quantified.filter(function (el) {
+                return el.type == searchType; // changed from el.type to el.quantity for this version  //do i need to sort this d3.descending
+            }) 
+            return test;
+            //console.log("FOUND "+test.length+" records");
+            //renderQS(test)
+            //return test;
+          }; */
+            
+        function renderQS(data) {
+            d3.select("#data")
+                .selectAll("div")
+                .data(data)
+                .enter()
+                .append("div")
+                .attr("time", function(d) {return d.timestamp;})
+                .each(function(d,i) {
+                    //var timestamp = d3.select(this).attr("time");
+                    var filtered = filterPoem(d.timestamp);
+                renderPoem(filtered);
+            //    .text(function(d) {return d.label+ " "+d.quantity+ " "+d.unit})
+              //  .on("mouseover", handleMouseOver)
+                //.on("mouseout", handleMouseOut);
+        });
+        };
+
+/*                .each(function(d,i) {
+                    var timestamp = d3.select(this).attr("time");
+                    var filtered = filterPoem(timestamp);
+                renderPoem(filtered);
+
+            var filtered = filterPoem(d.timestamp);
+            renderPoem(filtered); //render the filtered data
+
+
+
+*/
+            
+         function filterPoem(timestamp) {
+            console.log("filter for poem with time: " + timestamp);
+            var test = poem.filter(function (el) {
+              return el.timestamp == timestamp
+              });
+
+            //console.log("FOUND "+test.length+" records");
+            //renderQS(test)
+            //renderPoem(test);
+            return test;
+          }
+            
+            
+            
+            
+          //------------------------------------------------------------
+          //renderPoem: a function to render the poem extracted CSV data to the DOM
+          //CALLED in loadQS function
+          //------------------------------------------------------------
+        function renderPoem(data){
+            //d3.select("#maintext").selectAll("div").exit().remove();
+
+            //d3.select("#maintext") //select the "maintext" div
+              //  .selectAll("div") //select ALL of the divs beneath it -- trick - they don't exist yet! 
+                //.data(data);      //bind the poem data to this code block
+            
+            //d3.select("#maintext")
+              //  .data(data)
+                //.exit().remove();
+            
+            d3.select("#maintext")
+                .selectAll("div")
+                .data(data)
+                .enter() //d3 magic!
+                .append("a")
+                .append("div")       //for each row in the data, create a div!
+                .style('height',lineHeight + 'px')   //hardcode the line height set in the var above
+                .text(function (d) {return d.text;}) //in this case, d stands for a single "row" in the poem object. This prim
+                .attr("id", function(d) {return d.id;}) //set the id = to the poem line ID
+                .attr("time", function(d) {return d.timestamp;}) //set the timestamp to the timestamp
+              //.attr("citation", function(d){return d.citation;})
+                .style('font-style', function(d){return d.decoration;}) //test replaced 'text-decoration'
+              //.on("mouseover", handleMouseOver)
+              //.on("mouseout", handleMouseOut)
+            ;
+            
+            d3.select("#maintext").selectAll("a")
+                .each(function(d,i){
+    //            d3.select(this).attr("href", "/reverseindex4.html?" + String(d.quantity));
+                d3.select(this).attr("href", "https://sarahciston.now.sh/ui/index.html?" + String(d.id - 7));
+               // d3.select(this).attr("href", "index.html#" + String(d.id - 7)); // String(d.id) // positions top of screen, scrolled down 7 above active
+            }); //WHY NOT WORKING?? 
+               
+                
+
+          }//end renderPoem
+            //could make it so each indent is shortened depending on weight and leaves less space for text
+ 
+            
+            
+            
+//filters for a particular type
+//            d3.select("#data").selectAll("div")
+                //.filter(function(d,i){return d.type == category})
+                //.sort((d.quantity(d3.ascending)));
+            
+      //      d3.select("#data").selectAll("div")
+                //.attr("id", function(d) {return d.id;}) //set the id = to the QS line ID
+         //   ;
+           // d3.select("data").selectAll("div")
+             //   .data(quantified)
+               // .remove();
+            
+            
+            
+/*        function sortQS(quantified, category) {
+            d3.
+            //d3.select("#data", category)
+            if (d.type == category) {
+                .sort(d.quantity)
+                .sort(d3.descending)
+                };
+            
+            return quantified;
+            };    
+        
+        function renderQS() {
+            console.log(quantified);
+            console.log(poem);
+            
+            //need a way to sort the data, then link to a timestamp based on each of those
+            d3.select("#data", d.type) 
+                .selectAll("div")
+                .data(quantified)
+                .enter()
+                .append("div")
+                .text(function (d) {return d.label+" "+d.quantity+" "+d.unit});
+                .attr("id", function(d) {return d.id;}) //set the id = to the QS line ID
+                .attr("time", function(d) {return d.timestamp;}) //set the timestamp to the timestamp   
+        };
+          */  
+        
+
+          //------------------------------------------------------------
+          //handleMouseOver: on mouseover, call the filterdata function and then render the QS data
+            // SARAH??COULD MAKE THIS ON ANOTHER ACTION INSTEAD
+          //------------------------------------------------------------
+          function handleMouseOver(d,i){
+            //d3.select(this).attr({ //can use the d3.select(this) accessor to do something to the div you are mousing over!
+              //style:"color:aqua"
+            //});
+            var filtered = filterPoem(d.timestamp);
+            renderPoem(filtered); //render the filtered data
+          }
+
+          //------------------------------------------------------------
+          //handleMouseOut: on mouseout, render NO data
+          //------------------------------------------------------------
+          function handleMouseOut(){
+              renderPoem(""); //render NO DATA
+          }
+
+            
+          //------------------------------------------------------------
+          //filterData: filter data in the quantified dataset based on the
+          //timestamp provided
+            //CALLED IN handleMouseOver
+            //COULD ADD IN HERE additional filters for other datasets like LM -- randomize?
+          //------------------------------------------------------------
+    /*      function filterData(timestamp) {
+            console.log("filter for data with time: " + timestamp);
+            var test = quantified.filter(function (el) {
+              return el.timestamp == timestamp
+              });
+
+            console.log("FOUND "+test.length+" records");
+            //renderQS(test)
+            return test;
+          } */
+            
+        
+            
+// NEW VERSION
+            
+/*        function filterQS(category) {
+            console.log("filter for " + category);
+            var test = quantified.filter(function(d,i) {
+                return d.type == category
+                });    
+            console.log("Found " +quantified.length+" records");
+            return filtered;
+        };
+*/
+
+            //sortQS(quantfied);
+                
+/*        function sortQS(quantified){     
+            console.log("SORTED");
+            var quantified = quantified.sort(d.quantity(d3.descending));
+            console.log("Sorted "+sorted.length+" records");
+            return quantified;
+            };
+  */          
+                //.filter(function(d,i){return d.type == category})
+                //.sort((d.quantity(d3.ascending)));
+            //quantified = filterData(d.type == category);
+            //renderQS(filtered); //render the filtered data
+            
+
+          //------------------------------------------------------------
+          //renderQS: render data into the right side bar
+            //COULD ADD IN HERE additional renders for other filtered datasets like LM
+          //------------------------------------------------------------
+          /* function renderQS(data) {
+            var qs = d3.select("#data") //select the #data div
+              .selectAll("div") //selectALL subdivs
+              .data(data); //bind the data passed into this function
+
+              qs.exit().remove(); //when the data disapears, make the divs disapear!
+
+              qs.enter()  //when the data is there... print it! Controls what columns of quantified csv to include
+              .append("div")
+              //.text(function(d) {return d.timestamp+": "+d.quantity+" "+d.unit+" "+d.label});
+              .text(function(d) {return d.label+" "+d.quantity+" "+d.unit});
+          } */
+            
+// NEW VERSION             
+       /* function renderPoem(data) {
+            d3.select("#maintext")
+                .selectAll("div")
+                .data(data)
+                .enter() 
+                .append("div")
+                .style('height',lineHeight + 'px')   //hardcode the line height set in the var above
+                .text(function(d) {return d.text});
+                .attr("id", function(d) {return d.id;}) //set the id = to the poem line ID
+                .attr("time", function(d) {return d.timestamp;}) //set the timestamp to the timestamp
+                .style('font-style', function(d){return d.decoration;}) //test replaced 'text-decoration'
+                ;
+            };
+*/
+      //NOTE TO SARAH: I HAD TO COMMENT OUT THE INFINITE SCROLL BC IT WAS DOING SOMETHING
+      //REALLY WEIRD ON MY MACHINE
+      // $(window).scroll(function() {
+      //       if ($(window).scrollTop() > 10000 ) {
+      //           $(window).scrollTop(1);
+      //       }
+      //       else if ( $(window).scrollTop() == 0 ) {
+      //         $(window).scrollTop(10000);
+      //       }
+      //   });
+      //
+      //
+        // window.onscroll = function(ev) {
+        //     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        //         $(window).scrollTop(1);
+        //     }
+        // };
+
+    }); //end $(document).ready(function()
+
+    </script>
+
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Avenir');
+
+        /* For mobile phones and tablets: */
+        *, *:before, *:after {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        [class*="col-"] {
+            float: left;
+            padding: 30px;
+            display: block;
+        }
+
+        body {
+            text-decoration: none;
+            text-align: left;
+            font-family: Avenir, Helvetica, Arial, sans-serif;
+            font-size: 100%;
+            color: black;
+            margin: 0;
+            padding-left: 5%;
+        }
+        
+        .maintext {
+            position: fixed;
+            display: block;
+            color: red;
+            top: 0%;
+        }
+
+        a:link, a:visited {
+            color: black;
+            text-decoration: none;
+        }
+
+        a:hover, a:active {
+            text-decoration: underline;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /*div for qs data with vertical centering */
+        .data {
+            position: relative;
+            display: block;
+            top: 20%;
+            color: cyan;
+            background-color: white;
+            min-width: 100%;
+            min-height: 44px;
+        } 
+        
+        .line {
+            color: green;
+            /*padding-bottom: 23px;*/
+        }
+        
+
+@media only screen and (min-width: 950px) {
+    /* For tablet-desktop: */
+
+        [class*="col-"] {
+            float: left;
+            padding: 20px 50px;
+            display: inline-block;
+            min-width: 400px;
+        }
+    
+        body {
+            padding-left: 5%;
+            min-width: 1700px;
+            padding-bottom: 2%;
+            padding-top: 2%;
+        }
+    
+        .maintext {
+            position: fixed;
+            display: block; 
+            top: 10%;
+        }
+
+        .quantified {
+            /*padding-top: 50px;*/
+        }
+    
+        .data {
+            top: 40%;
+            background-color: none;
+            color: cyan;
+            font-weight: 500;
+            min-width: 500px;
+        }
+    
+        /* This is for text wrapping, turned off line-height set in D3, but may need to hard code line breaks instead*/
+        .line {
+            color: black;
+            /*line-height: 22px;
+            padding-bottom: 33px;*/
+        }
+
+        .col-1 {width: 8.33%; }
+        .col-2 {width: 16.66%;}
+        .col-3 {width: 25%;}
+        .col-4 {width: 33.33%;}
+        .col-5 {width: 41.66%;
+          /*background-color: yellow;*/
+        }
+        .col-6 {width: 50%;}
+        .col-7 {width: 58.33%;
+          /*background-color: blue;*/
+        }
+        .col-8 {width: 66.66%;}
+        .col-9 {width: 75%;  }
+        .col-10 {width: 83.33%;}
+        .col-11 {width: 91.66%;}
+        .col-12 {width: 100%;}
+    
+        }
+
+    </style>
+    </head>
+
+<body>
+
+  <div class="col-5" id="maintext"><!-- 33% -->
+  </div>
+  <div class="col-7" id="quantified"><!--66%-->
+    <div class="data" id ="data"></div>
+  </div>
+
+</body>
+
+</html>
