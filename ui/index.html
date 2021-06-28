@@ -35,7 +35,8 @@
           //INCLUDES CALLBACK TO LOAD QS data
           //------------------------------------------------------------
           function loadPoem() {
-            d3.csv("https://sarahciston.now.sh/ui/data/poem.csv", function(data) //read data from the poem csv file
+              //removed absolute url: https://sarahciston.github.io/ui/
+            d3.csv("data/poem.csv", function(data) //read data from the poem csv file
             {
               poem = data;
               loadQS();
@@ -48,7 +49,8 @@
           //CALLED in loadPoem function
           //------------------------------------------------------------
           function loadQS() {
-            d3.csv("https://sarahciston.now.sh/ui/data/quantified.csv", function(data){ //"/data/quantified.csv"  
+             // removed absolute url: https://sarahciston.github.io/ui/
+            d3.csv("data/quantified.csv", function(data){ //"/data/quantified.csv"  
                 //"http://acsweb.ucsd.edu/~sciston/portfolio/ui/data/quantified.csv"
               quantified = data;
               renderPoem();
@@ -288,7 +290,8 @@
               
             d3.select("#data").selectAll("a")
                 .each(function(d,i) {
-                    d3.select(this).attr("href", "https://sarahciston.now.sh/ui/reverseindex4.html?" + String(d.quantity)); 
+                    //removed absolute url: https://sarahciston.github.io/ui/ (used to be sarahciston.now.sh)
+                    d3.select(this).attr("href", "reverseindex4.html?" + String(d.quantity)); 
             
             //d3.select("#data").append("div").text(cite);
                           
@@ -306,8 +309,7 @@
             
     //travel("300");
 
-      //NOTE TO SARAH: I HAD TO COMMENT OUT THE INFINITE SCROLL BC IT WAS DOING SOMETHING
-      //REALLY WEIRD ON MY MACHINE
+      //NOTE TO SARAH: I HAD TO COMMENT OUT THE INFINITE SCROLL BC IT WAS DOING SOMETHING REALLY WEIRD ON MY MACHINE
 /*       $(window).scroll(function() {
              if ($(window).scrollTop() > 10000 ) {
                  $(window).scrollTop(1);
