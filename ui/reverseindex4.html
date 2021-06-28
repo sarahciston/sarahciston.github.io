@@ -24,7 +24,8 @@
           //INCLUDES CALLBACK TO LOAD QS data
           //------------------------------------------------------------
           function loadPoem() {
-            d3.csv("https://sarahciston.github.io/ui/data/poem.csv", function(data) //read data from the poem csv file
+              //removed absolute url: https://sarahciston.github.io/ui/
+            d3.csv("data/poem.csv", function(data) //read data from the poem csv file
             {
               poem = data;
               loadQS();
