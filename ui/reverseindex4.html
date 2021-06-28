@@ -24,7 +24,7 @@
           //INCLUDES CALLBACK TO LOAD QS data
           //------------------------------------------------------------
           function loadPoem() {
-            d3.csv("https://sarahciston.now.sh/ui/data/poem.csv", function(data) //read data from the poem csv file
+            d3.csv("https://sarahciston.github.io/ui/data/poem.csv", function(data) //read data from the poem csv file
             {
               poem = data;
               loadQS();
@@ -37,7 +37,8 @@
           //CALLED in loadPoem function
           //------------------------------------------------------------
           function loadQS() {
-            d3.csv("https://sarahciston.now.sh/ui/data/quantified.csv", function(data){
+              // removed absolute url: https://sarahciston.github.io/ui/
+            d3.csv("data/quantified.csv", function(data){
                 quantified = data;
               //renderPoem();
                 var filtered = filterQS(searchMeta);  // changed from category to characteristic for this version // now changed to two args searchType, searchQuantity
@@ -155,7 +156,7 @@
             d3.select("#maintext").selectAll("a")
                 .each(function(d,i){
     //            d3.select(this).attr("href", "/reverseindex4.html?" + String(d.quantity));
-                d3.select(this).attr("href", "https://sarahciston.now.sh/ui/index.html?" + String(d.id - 7));
+                d3.select(this).attr("href", "index.html?" + String(d.id - 7)); //removed absolute url: https://sarahciston.github.io/ui/
                // d3.select(this).attr("href", "index.html#" + String(d.id - 7)); // String(d.id) // positions top of screen, scrolled down 7 above active
             }); //WHY NOT WORKING?? 
                
