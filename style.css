@@ -1,3 +1,16 @@
+
+
+@font-face {
+    font-family: "FluxischElse";
+    src: url(assets/FluxischElse-Regular.woff);
+
+    font-family: "FluxischElse-Light";
+    src: url(assets/FluxischElse-Light.woff);
+
+    font-family: "FluxischElse-Bold";
+    src: url(assets/FluxischElse-Bold.woff);
+}
+
 *, *:before, *:after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -25,14 +38,15 @@
 body {
     text-decoration: none;
     text-align: left;
-    font-family: courier, monospace;
+    /* font-family: , courier, monospace; */
     font-size: 100%;
     color:darkslategray;
     margin: 0;
+    font-family: 'Ubuntu Mono', courier, monospace;
+    /* font-family: 'FluxischElse', courier, monospace; */
 }
 
-h4 {
-    font-weight: 500;
+h3, h4 {
     color: darkturquoise
 }
 
@@ -47,7 +61,6 @@ a:hover, a:active {
 }
 
 p {
-    color: darkslategray;
     font-size: 100%;
 }
 
@@ -70,6 +83,11 @@ img {
     height: 750px;
 }
 
+.img-small {
+    margin: 5px;
+    height: 400px;
+}
+
 
 @media only screen and (min-width: 950px) {
 /* For tablet-desktop: */
@@ -82,7 +100,7 @@ img {
 }
 
 .menu {
-    padding-top: 50px;
+    padding-top: 40px;
 }
 
 .col-1 {width: 8.33%;}
