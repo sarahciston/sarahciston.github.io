@@ -80,13 +80,18 @@ img {
 
 .img-proj {
     margin: 5px;
-    height: 750px;
+    max-height: 750px;
+    width: 100%;
 }
 
 .img-small {
     margin: 5px;
-    height: 400px;
+    max-height: 400px;
+    width: 100%;
 }
+
+/* .hori {
+} */
 
 
 @media only screen and (min-width: 950px) {
