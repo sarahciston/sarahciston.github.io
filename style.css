@@ -76,22 +76,29 @@ img {
 .cover {
     max-height: 100%;
     height: auto;
+    max-width: 100%;
+    width: auto;
 }
 
 .img-proj {
     margin: 5px;
     max-height: 750px;
-    width: 100%;
+    max-width: 100%;
+    width: auto;
 }
 
 .img-small {
     margin: 5px;
     max-height: 400px;
-    width: 100%;
+    max-width: 100%;
+    width: auto;
 }
 
 /* .hori {
-} */
+} 
+vert {
+}
+*/
 
 
 @media only screen and (min-width: 950px) {
