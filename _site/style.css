@@ -1,0 +1,129 @@
+
+
+@font-face {
+    font-family: "FluxischElse";
+    src: url(assets/FluxischElse-Regular.woff);
+
+    font-family: "FluxischElse-Light";
+    src: url(assets/FluxischElse-Light.woff);
+
+    font-family: "FluxischElse-Bold";
+    src: url(assets/FluxischElse-Bold.woff);
+}
+
+*, *:before, *:after {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.row::after {
+    content: "";
+    clear: both;
+    display: block;
+}
+
+[class*="col-"] {
+    float: left;
+    padding: 15px;
+    display: block;
+}
+
+.menu {
+    padding-left: 10%;
+    text-align: left;
+}
+
+
+body {
+    text-decoration: none;
+    text-align: left;
+    /* font-family: , courier, monospace; */
+    font-size: 100%;
+    color:darkslategray;
+    margin: 0;
+    font-family: 'Ubuntu Mono', courier, monospace;
+    /* font-family: 'FluxischElse', courier, monospace; */
+}
+
+h3, h4 {
+    color: darkturquoise
+}
+
+a:link, a:visited {
+    color: black;
+    text-decoration: none;
+}
+
+a:hover, a:active {
+    text-decoration: underline;
+    color: red;
+}
+
+p {
+    font-size: 100%;
+}
+
+img {
+    max-width: 100%;
+    align: left;
+}
+
+#toc {
+    /* text-align: right; */
+}
+
+.cover {
+    max-height: 100%;
+    height: auto;
+    max-width: 100%;
+    width: auto;
+}
+
+.img-proj {
+    margin: 5px;
+    max-height: 750px;
+    max-width: 100%;
+    width: auto;
+}
+
+.img-small {
+    margin: 5px;
+    max-height: 400px;
+    max-width: 100%;
+    width: auto;
+}
+
+/* .hori {
+} 
+vert {
+}
+*/
+
+
+@media only screen and (min-width: 950px) {
+/* For tablet-desktop: */
+
+[class*="col-"] {
+    float: left;
+    padding: 20px 50px;
+    display: block;
+    min-width: 40px;
+}
+
+.menu {
+    padding-top: 40px;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
