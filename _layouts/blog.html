@@ -1,0 +1,21 @@
+---
+layout: default
+
+---
+
+<h1>{{ page.title }}</h1>
+
+{{ page.author | default: site.author }}
+
+<main id="content">
+
+{% for post in site.posts %}
+  <p>{{ post.title }}</p>
+{% endfor %}
+
+{{content}}
+
+</main>     
+
+
+

@@ -1,6 +1,6 @@
 
 
-@font-face {
+/* @font-face {
     font-family: "FluxischElse";
     src: url(assets/FluxischElse-Regular.woff);
 
@@ -9,7 +9,7 @@
 
     font-family: "FluxischElse-Bold";
     src: url(assets/FluxischElse-Bold.woff);
-}
+} */
 
 *, *:before, *:after {
     -moz-box-sizing: border-box;
@@ -38,7 +38,6 @@
 body {
     text-decoration: none;
     text-align: left;
-    /* font-family: , courier, monospace; */
     font-size: 100%;
     color:darkslategray;
     margin: 0;

@@ -1,0 +1,96 @@
+---
+---
+
+@import "{{ site.theme }}";
+// @import url('https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;1,400&family=Space+Grotesk:wght@300;500&display=swap');
+// @import url('https://fonts.googleapis.com/css2?family=Almendra+Display&family=Anaheim&display=swap');
+// @import url("https://use.typekit.net/yno1izp.css");
+// @import url('https://fonts.googleapis.com/css2?family=Jura:wght@200;500&family=Major+Mono+Display&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+// &family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400;1,700
+// @import url("https://use.typekit.net/roc4zzd.css");
+// @import url("https://use.typekit.net/ncs4qmk.css");
+
+
+
+body {
+  // font-family: din-2014, sans-serif;
+  // font-family: 'Source Sans Pro', sans-serif;
+  // font-family: kepler-std,serif;
+  // font-weight: 400;
+  // font-style: normal;
+  // background-color: whitesmoke;
+  text-decoration: none;
+  text-align: left;
+  font-size: 0.9em;
+  // font-size: 100%;
+  color:darkslategray;
+  margin: 0;
+  font-family: 'Ubuntu Mono', Courier, monospace;
+}
+
+a, a:visited {
+  color: darkturquoise;
+  text-decoration-line: none;
+}
+
+a:hover, a:active {
+  color: red;
+  font-weight: 700;
+  text-decoration-line: underline;
+}
+
+h1, h2, h3, h4 {
+  // font-family: 'Courier New', Courier, monospace;
+  // font-family: din-2014, sans-serif;
+  // font-family: kepler-std,serif;
+  // font-family: kepler-std-extended-display, serif;
+  // font-family: abolition, sans-serif;
+  font-weight: 400;
+  // font-style: normal;
+  color: darkturquoise;
+}
+
+.zine-button {
+  background: darkslateblue;
+	border-width: 1px;
+	border-radius: 5px;
+	color: white !important;
+	padding: 5px;
+  font-weight: 400 !important;
+  float:inline-end;
+}
+
+#zineTitle {
+  visibility: hidden;
+}
+
+.thumb {
+  width: 175px;
+}
+
+.purple {
+  color: darkturquoise;
+  font-family: 'Ubunto Mono', Courier, monospace;
+}
+
+.play-along {
+  background-color: whitesmoke;
+  border-width: 1px;
+  border-radius: 10px;
+  border-style: dashed;
+  border-color: darkturquoise;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 0.9em;
+  // float:inline-start;
+}
+
+/*
+  Mobile First! Put desktop styles below
+*/
+
+@media screen and (min-width: 768px){
+  body {
+    background: whitesmoke;
+  }
+}

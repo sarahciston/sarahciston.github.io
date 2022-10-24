@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<!-- {{ assign zineLayout = "?layout=zine" }} -->
+
+<h1>{{ page.title }}</h1>
+
+<h3>{{ page.description }}</h3>
+
+<b>[{{ p.title }}]({{ p.url | absolute_url }})</b> | {{p.description}}
+
+{% if page.tags %}
+  <small><em>{{ page.tags | join: ", " }}</em></small>
+{% endif %}
+
+<small>{{ page.date | date: "%-d %B %Y" }}</small>
+
+<!-- <p class="view">by {{ page.author | default: site.author }}</p> -->
+
+<main id="content">
+
+{{content}}
+
+</main>     
+
+
+

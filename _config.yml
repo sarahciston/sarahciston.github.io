@@ -1,1 +1,36 @@
 theme: jekyll-theme-minimal
+
+title: Sarah Ciston
+description: ""
+author: Sarah Ciston
+
+logo: "/assets/innervoiceover-imap2019-2.jpg"
+# show_downloads: 
+# google_analytics: 
+# main-img: "/assets/innervoiceover-imap2019-2.jpg"
+
+baseurl: /
+
+links: 
+  # "Get this dissertation in your Inbox (TK)":
+    # - "mailgun-setup-TK"
+  "Intersectional AI Toolkit": 
+    - "https://intersectionalai.com"
+  "Tethered.Network": 
+    - "https://sarahciston.github.io/tethered"
+  "Get your pal a QUEER LOVE zine": 
+    - "https://queerlovezine.com/"
+  # "Get yourself a shirt":
+    # - "https://www.bonfire.com/store/coding-care/"
+  "More projects": 
+    - "https://sarahciston.com"
+links_new_tab: true
+
+kramdown:
+  parse_block_html: true
+  toc_levels: "2"
+
+# how do i indicate other folders to include in jekyll conversion again
+
+github: [metadata]
+
